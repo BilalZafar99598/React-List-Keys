@@ -23,14 +23,22 @@ const Content = () => {
     const handleCheck = (id) => {
         const listItems = items.map((item) => item.id === id ? {...item, checked: !item.checked} : item);
         setItems(listItems);
-        localStorage('shoppinglist', JSON.stringify(listItems))
+        localStorage.setItem('shoppinglist', JSON.stringify(listItems));
+    }
+
+    const handleDelete = (id) => {
+        // console.log(`ID: ${id}`);
+        const deleteItems = items.filter((item) => item.id !== id);
+        setItems(deleteItems)
+        localStorage.setItem('deleteData', JSON.stringify(deleteItems));
     }
     
 
 
     return (
         <main>
-            <ul>
+            {items.length > 0 ? (
+                <ul>
                 {
                     items.map((item) => (
                         <li className="item" key={item.id}>
@@ -39,12 +47,18 @@ const Content = () => {
                                 checked={item.checked}
                                 onChange={() => handleCheck(item.id)}
                             />
-                            <label>{item.item}</label>
-                            <FaTrashAlt role="button" tabIndex="0"/>
+                            <label
+                                style={(item.checked) ? {textDecoration: 'line-through'} : null}
+                                onDoubleClick={() => handleCheck(item.id)}
+                            >{item.item}</label>
+                            <FaTrashAlt onClick={() => handleDelete(item.id)} role="button" tabIndex="0"/>
                         </li>
                     ))
                 }
             </ul>
+            ) : (
+                <h1>No Data Found</h1>
+            )}
         </main>
     )
 }
